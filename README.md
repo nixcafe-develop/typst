@@ -1,10 +1,15 @@
 # Nix Flake · Typst Dev Template
 
-> purr · git-hooks · typst · reproducible · nix-flake
+> purr · git-hooks · typst · nix-flake
 
 Nix flake template for Typst document authoring — a reproducible, declarative dev shell with Nix formatters, linters, and git pre-commit hooks. Bootstrapped via [purr](https://github.com/nixcafe/purr), enforcing code quality on every commit.
 
-Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
+## Quick Start
+
+```bash
+gh repo create my-typst-project --template nixcafe/typst --clone
+direnv allow
+```
 
 ## What's Inside
 
@@ -17,25 +22,6 @@ Part of the [develop-templates](https://github.com/nixcafe/develop-templates) co
 - **Dev shell** — `develop/shells/default/` ships `nixfmt-rfc-style`, `deadnix`, and `statix` in `$PATH`. No Typst packages are configured out of the box — you bring your own.
 - **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt-rfc-style`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
 - **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
-
-## Quick Start
-
-```bash
-nix flake init -t "github:nixcafe/develop-templates#typst" --refresh
-```
-
-To shorten, register an alias:
-```bash
-nix registry add beans "github:nixcafe/develop-templates"
-nix flake init -t beans#typst
-```
-
-> **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
-
-```bash
-gh repo create my-typst-project --template nixcafe/typst --clone
-direnv allow
-```
 
 ## Customizing
 
