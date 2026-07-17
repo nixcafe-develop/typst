@@ -6,18 +6,6 @@ Nix flake template for Typst document authoring — a reproducible, declarative 
 
 Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
 
-## What's Inside
-
-| Tool | Purpose |
-|------|---------|
-| `nixfmt-rfc-style` | Nix formatter |
-| `deadnix` | Remove dead Nix code |
-| `statix` | Nix linter |
-
-- **Dev shell** — `develop/shells/default/` ships `nixfmt-rfc-style`, `deadnix`, and `statix` in `$PATH`. No Typst packages are configured out of the box — you bring your own.
-- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt-rfc-style`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
-- **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
-
 ## Quick Start
 
 ```bash
@@ -36,6 +24,18 @@ nix flake init -t beans#typst
 gh repo create my-typst-project --template nixcafe/typst --clone
 direnv allow
 ```
+
+## What's Inside
+
+| Tool | Purpose |
+|------|---------|
+| `nixfmt-rfc-style` | Nix formatter |
+| `deadnix` | Remove dead Nix code |
+| `statix` | Nix linter |
+
+- **Dev shell** — `develop/shells/default/` ships `nixfmt-rfc-style`, `deadnix`, and `statix` in `$PATH`. No Typst packages are configured out of the box — you bring your own.
+- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt-rfc-style`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
+- **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
 
 ## Customizing
 
