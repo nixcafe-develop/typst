@@ -4,6 +4,27 @@
 
 Nix flake template for Typst document authoring — a reproducible, declarative dev shell with Nix formatters, linters, and git pre-commit hooks. Bootstrapped via [purr](https://github.com/nixcafe/purr), enforcing code quality on every commit.
 
+Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
+
+## Quick Start
+
+```bash
+nix flake init -t "github:nixcafe/develop-templates#typst" --refresh
+```
+
+To shorten, register an alias:
+```bash
+nix registry add beans "github:nixcafe/develop-templates"
+nix flake init -t beans#typst
+```
+
+> **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
+
+```bash
+gh repo create my-typst-project --template nixcafe/typst --clone
+direnv allow
+```
+
 ## What's Inside
 
 | Tool | Purpose |
@@ -81,20 +102,4 @@ All three hooks are enabled by default. Set `enable = false` to skip a hook, or 
 ├── statix.toml                        # Statix linter config
 ├── .envrc                             # direnv — auto-loads nix develop
 └── .gitignore
-```
-
-## Quick Start
-
-```bash
-# Clone & enter
-git clone <repo-url> typst-project && cd typst-project
-
-# Allow direnv
-direnv allow
-
-# Or enter manually
-nix develop
-
-# Run hooks manually (optional)
-nix flake check
 ```
