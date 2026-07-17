@@ -1,8 +1,8 @@
 # Nix Flake · Typst Dev Template
 
-> purr · git-hooks · typst · reproducible · nix-flake
+> typst · tinymist · purr · git-hooks
 
-Nix flake template for Typst document authoring — a reproducible, declarative dev shell with Nix formatters, linters, and git pre-commit hooks. Bootstrapped via [purr](https://github.com/nixcafe/purr), enforcing code quality on every commit.
+Nix flake template for Typst document authoring — a reproducible, declarative dev shell with Typst, tinymist LSP, Nix formatters, linters, and git pre-commit hooks. Bootstrapped via [purr](https://github.com/nixcafe/purr), enforcing code quality on every commit.
 
 Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
 
@@ -25,45 +25,44 @@ gh repo create my-typst-project --template nixcafe/typst --clone
 direnv allow
 ```
 
+### Build Your Document
+
+```bash
+typst compile main.typ
+# Or watch mode:
+typst watch main.typ
+```
+
 ## What's Inside
 
 | Tool | Purpose |
 |------|---------|
-| `nixfmt-rfc-style` | Nix formatter |
+| `typst` | Typst document compiler |
+| `tinymist` | LSP language server (completion, diagnostics, preview) |
+| `nixfmt` | Nix formatter |
 | `deadnix` | Remove dead Nix code |
 | `statix` | Nix linter |
 
-- **Dev shell** — `develop/shells/default/` ships `nixfmt-rfc-style`, `deadnix`, and `statix` in `$PATH`. No Typst packages are configured out of the box — you bring your own.
-- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt-rfc-style`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
+- **Dev shell** — `develop/shells/default/` ships `typst`, `tinymist`, `nixfmt`, `deadnix`, and `statix` in `$PATH`.
+- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
 - **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
+- **Sample** — `main.typ` is a minimal document showing math, lists, code blocks, and tables.
 
 ## Customizing
 
-### Add Typst
+### Typst Packages
 
-Edit `develop/shells/default/default.nix` and add the Typst packages your project needs:
+Typst and `tinymist` are pre-configured. Add extra tools as needed:
 
 ```nix
-{
-  inputs,
-  pkgs,
-  system,
-  ...
-}:
-pkgs.mkShell {
-  packages = with pkgs; [
-    nixfmt-rfc-style
-    deadnix
-    statix
-    typst
-    typstfmt
-  ];
-
-  shellHook = ''
-    ${inputs.self.checks.${system}.git-hooks.shellHook}
-  '';
-  buildInputs = inputs.self.checks.${system}.git-hooks.enabledPackages;
-}
+packages = with pkgs; [
+  typst
+  tinymist
+  typstfmt       # formatter (optional)
+  nixfmt
+  deadnix
+  statix
+];
 ```
 
 Then run `direnv allow` (or `nix develop`) to reload.
@@ -78,7 +77,7 @@ inputs.git-hooks.lib.${system}.run {
   src = ../../..;
 
   hooks = {
-    nixfmt-rfc-style.enable = true;
+    nixfmt.enable = true;
     deadnix.enable = true;
     statix.enable = true;
   };
@@ -92,6 +91,7 @@ All three hooks are enabled by default. Set `enable = false` to skip a hook, or 
 ```
 .
 ├── flake.nix                          # Flake entry point — purr drives everything
+├── main.typ                           # Sample Typst document
 ├── develop/
 │   ├── checks/
 │   │   └── git-hooks/
