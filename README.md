@@ -21,7 +21,7 @@ nix flake init -t beans#typst
 > **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
 
 ```bash
-gh repo create my-typst-project --template nixcafe/typst --clone
+gh repo create my-typst-project --template nixcafe-develop/typst --clone
 direnv allow
 ```
 
