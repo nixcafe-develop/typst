@@ -1,75 +1,104 @@
-# Nix Flake · Typst Dev Template
+# Typst document environment
 
-> typst · tinymist · purr · git-hooks
+Nix flake template for Typst documents. The dev shell provides Typst, the tinymist language server, and `nixfmt`, `deadnix`, and `statix` for Nix files. Pre-commit hooks for the Nix tools are enabled and installed by the shell hook. The flake is built with [purr](https://github.com/nixcafe/purr) and uses [git-hooks.nix](https://github.com/cachix/git-hooks.nix).
 
-Nix flake template for Typst document authoring — a reproducible, declarative dev shell with Typst, tinymist LSP, Nix formatters, linters, and git pre-commit hooks. Bootstrapped via [purr](https://github.com/nixcafe/purr), enforcing code quality on every commit.
+Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection.
 
-Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
+## Quick start
 
-## Quick Start
+Create the project files in the current directory:
 
 ```bash
 nix flake init -t "github:nixcafe/develop-templates#typst" --refresh
 ```
 
-To shorten, register an alias:
+Register the collection once to use the shorter name:
+
 ```bash
 nix registry add beans "github:nixcafe/develop-templates"
 nix flake init -t beans#typst
 ```
 
-> **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
+With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is already registered.
+
+You can also create a repository from the template repository:
 
 ```bash
 gh repo create my-typst-project --template nixcafe-develop/typst --clone
-direnv allow
 ```
 
-### Build Your Document
+Enter the dev shell:
+
+```bash
+nix develop
+```
+
+If direnv is installed, `direnv allow` loads the shell when you enter the directory. The template includes an `.envrc` that calls `use flake`.
+
+The template does not include a `flake.lock`. The first `nix develop` resolves the inputs and writes one.
+
+## Build the document
 
 ```bash
 typst compile main.typ
-# Or watch mode:
+```
+
+To rebuild on changes:
+
+```bash
 typst watch main.typ
 ```
 
-## What's Inside
+Both commands write `main.pdf`, which is listed in `.gitignore`.
+
+## What's included
 
 | Tool | Purpose |
 |------|---------|
-| `typst` | Typst document compiler |
-| `tinymist` | LSP language server (completion, diagnostics, preview) |
+| `typst` | Typst compiler |
+| `tinymist` | LSP server with completion, diagnostics, and preview |
 | `nixfmt` | Nix formatter |
-| `deadnix` | Remove dead Nix code |
+| `deadnix` | Finds dead code in Nix files |
 | `statix` | Nix linter |
 
-- **Dev shell** — `develop/shells/default/` ships `typst`, `tinymist`, `nixfmt`, `deadnix`, and `statix` in `$PATH`.
-- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
-- **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
-- **Sample** — `main.typ` is a minimal document showing math, lists, code blocks, and tables.
+The sample `main.typ` shows headings, math, lists, a code block, and a table.
+
+The pre-commit hooks for `nixfmt`, `deadnix`, and `statix` are enabled in `develop/checks/git-hooks/default.nix`. The shell hook installs them when you enter the dev shell.
+
+The flake also sets `allowUnfree = true` and uses `pkgs.nixfmt` as the formatter, so `nix fmt` formats the Nix files.
+
+## Useful commands
+
+```bash
+nix develop              # enter the dev shell
+direnv allow             # load the shell through direnv
+typst compile main.typ   # build main.pdf
+typst watch main.typ     # rebuild on changes
+nix fmt                  # format Nix files with nixfmt
+```
 
 ## Customizing
 
-### Typst Packages
+### Add packages
 
-Typst and `tinymist` are pre-configured. Add extra tools as needed:
+`develop/shells/default/default.nix` contains the package list. Add tools as needed:
 
 ```nix
 packages = with pkgs; [
   typst
   tinymist
-  typstfmt       # formatter (optional)
+  typstfmt       # formatter
   nixfmt
   deadnix
   statix
 ];
 ```
 
-Then run `direnv allow` (or `nix develop`) to reload.
+Run `direnv allow` or `nix develop` to reload the shell after changing the list.
 
-### Pre-commit Hooks
+### Pre-commit hooks
 
-Edit `develop/checks/git-hooks/default.nix` to enable, disable, or add hooks:
+`develop/checks/git-hooks/default.nix` enables three hooks:
 
 ```nix
 { inputs, system, ... }:
@@ -84,13 +113,13 @@ inputs.git-hooks.lib.${system}.run {
 }
 ```
 
-All three hooks are enabled by default. Set `enable = false` to skip a hook, or add new entries from [git-hooks.nix](https://github.com/cachix/git-hooks.nix) modules.
+Set `enable = false` to skip a hook, or add entries from [git-hooks.nix](https://github.com/cachix/git-hooks.nix).
 
-## Project Structure
+## Project structure
 
 ```
 .
-├── flake.nix                          # Flake entry point — purr drives everything
+├── flake.nix                          # Flake entry point
 ├── main.typ                           # Sample Typst document
 ├── develop/
 │   ├── checks/
@@ -98,8 +127,8 @@ All three hooks are enabled by default. Set `enable = false` to skip a hook, or 
 │   │       └── default.nix            # Pre-commit hook definitions
 │   └── shells/
 │       └── default/
-│           └── default.nix            # Dev shell packages + shellHook
-├── statix.toml                        # Statix linter config
-├── .envrc                             # direnv — auto-loads nix develop
+│           └── default.nix            # Dev shell packages and shell hook
+├── statix.toml                        # statix configuration
+├── .envrc                             # direnv: use flake
 └── .gitignore
 ```
